@@ -1,0 +1,41 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/session-service/session-service.html">
+<link rel="import" href="/custom-components/session-card.html">  
+<link rel="import" href="/components/paper-input/paper-input.html">
+
+<polymer-element name="session-list" attributes="show">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+      }
+      session-card {
+        margin-bottom: 30px;
+      }
+    </style>
+    
+    <session-service id="service" sessions="{{sessions}}"></session-service>
+    
+    <div layout vertical center>
+      <template repeat="{{session in sessions}}">
+        <template if="{{(show == 'active' && session.status == '1') || (show == 'expired' && session.status == '0')}}">
+          <session-card session="{{session}}"></session-card>
+        </template>
+      </template>
+   
+    </div>
+  
+  </template>
+  
+  <script>
+    Polymer({
+      handleStartStreaming: function(event, detail, sender) {
+        console.log('handleStartStreaming');
+        var session = sender.templateInstance.model.session;
+        console.log(session);
+        this.$.service.startStreaming(session);
+      }
+    });
+  </script>
+</polymer-element>

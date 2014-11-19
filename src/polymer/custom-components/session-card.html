@@ -1,0 +1,86 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/core-icon-button/core-icon-button.html">
+<link rel="import" href="/components/paper-input/paper-input.html">
+
+<polymer-element name="session-card" attributes="session showstream">
+	<template>
+		<style>
+			:host {
+				display: block;
+				position: relative;
+				background-color: white;
+				padding: 20px;
+				width: 100%;
+				font-size: 1.2rem;
+				font-weight: 300;
+			}
+			.card-header {
+				margin-bottom: 10px;
+			}
+			.card-header h2 {
+				margin: 0;
+				font-size: 1.8rem;
+				font-weight: 300;
+			}
+			.card-header img {
+				width: 70px;
+				border-radius: 50%;
+				margin: 10px;
+			}
+			core-icon-button {
+				position: absolute;
+				top: 3px;
+				right: 3px;
+				color: #636363;
+			}
+			:host([favorite]) core-icon-button {
+				color: #da4336;
+			}
+		</style>
+
+		<template bind="{{session}}"">
+			<div class="card-header" layout horizontal center>
+				<img src="/images/material/hardware/ic_cast_48px.svg" />
+				<h2>{{name}}</h2>
+				<core-icon-button
+					hidden?="{{status == 0}}"
+					id="streaming"
+					icon="send"
+					on-tap="{{streamingTapped}}">
+				</core-icon-button>
+			</div>
+			<content>
+				<paper-input disabled floatingLabel="true" label="ID" value="{{id}}"></paper-input>
+				<paper-input disabled floatingLabel="true" label="URL" value="{{url}}"></paper-input>
+				<paper-input disabled floatingLabel="true" label="CONTENT" value="{{content}}"></paper-input>
+			</content>
+		</template>
+		
+		<template bind="{{session}}" if="{{showstream != undefined}}">
+			<div class="vlc-player" layout horizontal center>
+				<object
+					classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+					codebase="http://downloads.videolan.org/pub/videolan/vlc/latest/win32/axvlc.cab"
+					width="400" height="300"
+					id="vlc" events="True">
+				
+					<param name="Src" value="{{url}}"></param>
+					<param name="ShowDisplay" value="True" ></param>
+					<param name="AutoLoop" value="no"></param>
+					<param name="AutoPlay" value="yes"></param>
+					<embed type="application/x-google-vlc-plugin" name="vlcfirefox" autoplay="yes" loop="no" width="400" height="300" target="{{url}}"></embed>
+				</object>
+			</div>
+		</template>
+		
+
+	</template>
+
+	<script>
+		Polymer('session-card', {
+			streamingTapped: function(event, detail, sender) {
+				this.showstream = true;
+			}
+		});
+	</script>
+</polymer-element>
